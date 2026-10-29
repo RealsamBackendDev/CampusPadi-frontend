@@ -5,6 +5,8 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ArtisanSearch from './pages/ArtisanSearch';
+import MyRequests from './pages/MyRequests';
+import RegisterArtisan from './pages/RegisterArtisan';
 
 function App() {
   const { user, loading } = useAuth();
@@ -24,6 +26,8 @@ function App() {
     >
       <Routes>
         <Route path="/" element={user ? <Navigate to="/app" replace /> : <Landing />} />
+        <Route path="/app/requests" element={user ? <MyRequests /> : <Navigate to="/login" replace />} />
+<Route path="/app/artisan/register" element={user ? <RegisterArtisan /> : <Navigate to="/login" replace />} />
         <Route path="/login" element={user ? <Navigate to="/app" replace /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/app" replace /> : <Register />} />
         <Route path="/app" element={user ? <ArtisanSearch /> : <Navigate to="/login" replace />} />

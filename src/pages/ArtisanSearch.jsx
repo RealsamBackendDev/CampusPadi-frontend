@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { searchArtisans, createServiceRequest } from '../services/api';
 import { getSchoolTheme } from '../config/schools';
@@ -25,7 +25,10 @@ export default function ArtisanSearch() {
     setLoading(true);
     setError('');
     try {
-      const res = await searchArtisans({ skill: searchSkill || undefined, includeNearby: nearby });
+      const res = await searchArtisans({
+        skill: searchSkill || undefined,
+        includeNearby: nearby,
+      });
       setArtisans(res.data.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Search failed');
@@ -40,7 +43,12 @@ export default function ArtisanSearch() {
 
   const openRequest = (artisan) => {
     setSelected(artisan);
-    setForm({ category: artisan.skills[0] || '', description: '', location: '', budget: '' });
+    setForm({
+      category: artisan.skills[0] || '',
+      description: '',
+      location: '',
+      budget: '',
+    });
     setFormError('');
     setSuccess(false);
   };
@@ -89,9 +97,21 @@ export default function ArtisanSearch() {
           </span>
           <h1 className="text-2xl font-bold text-gray-900">Find an Artisan</h1>
         </div>
-        <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-gray-800">
-          Log out
-        </button>
+        <div className="flex items-center gap-4">
+          <Link to="/app/requests" className="text-sm font-medium" style={{ color: theme.primary }}>
+            My Requests
+          </Link>
+          <Link
+            to="/app/artisan/register"
+            className="text-sm font-medium"
+            style={{ color: theme.primary }}
+          >
+            Earn as an artisan
+          </Link>
+          <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-gray-800">
+            Log out
+          </button>
+        </div>
       </header>
 
       <div className="flex gap-2 mb-4">
@@ -125,7 +145,9 @@ export default function ArtisanSearch() {
         Include artisans from nearby schools
       </label>
 
-      {error && <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{error}</div>}
+      {error && (
+        <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{error}</div>
+      )}
 
       {!loading && artisans.length === 0 && !error && (
         <p className="text-center text-gray-500 py-10">
@@ -135,7 +157,10 @@ export default function ArtisanSearch() {
 
       <div className="space-y-4">
         {artisans.map((artisan) => (
-          <div key={artisan.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+          <div
+            key={artisan.id}
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-bold text-lg text-gray-900">{artisan.name}</h3>
@@ -146,14 +171,20 @@ export default function ArtisanSearch() {
                 <div className="text-xs text-gray-400">{artisan.reviewCount} reviews</div>
               </div>
             </div>
+
             <div className="flex flex-wrap gap-2 mt-3">
               {artisan.skills.map((s) => (
-                <span key={s} className="bg-gray-100 text-gray-700 text-xs rounded-full px-3 py-1">
+                <span
+                  key={s}
+                  className="bg-gray-100 text-gray-700 text-xs rounded-full px-3 py-1"
+                >
                   {s.replace(/_/g, ' ')}
                 </span>
               ))}
             </div>
+
             {artisan.bio && <p className="text-sm text-gray-600 mt-3">{artisan.bio}</p>}
+
             <button
               onClick={() => openRequest(artisan)}
               className="mt-4 text-white text-sm font-medium rounded-lg px-4 py-2"
@@ -170,7 +201,12 @@ export default function ArtisanSearch() {
           <div className="bg-white rounded-2xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-lg">Request {selected.name}</h2>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-700 text-xl">×</button>
+              <button
+                onClick={() => setSelected(null)}
+                className="text-gray-400 hover:text-gray-700 text-xl"
+              >
+                ×
+              </button>
             </div>
 
             {success ? (
@@ -182,6 +218,7 @@ export default function ArtisanSearch() {
                 {formError && (
                   <div className="bg-red-50 text-red-600 rounded-lg p-3 text-sm">{formError}</div>
                 )}
+
                 <div>
                   <label className="block text-sm font-medium mb-1">Service Type</label>
                   <input
@@ -192,6 +229,7 @@ export default function ArtisanSearch() {
                     style={{ ['--tw-ring-color']: theme.primary }}
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium mb-1">Describe the problem</label>
                   <textarea
@@ -204,6 +242,7 @@ export default function ArtisanSearch() {
                     style={{ ['--tw-ring-color']: theme.primary }}
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium mb-1">Your Location</label>
                   <input
@@ -215,6 +254,7 @@ export default function ArtisanSearch() {
                     style={{ ['--tw-ring-color']: theme.primary }}
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium mb-1">Budget (₦, optional)</label>
                   <input
@@ -226,6 +266,7 @@ export default function ArtisanSearch() {
                     style={{ ['--tw-ring-color']: theme.primary }}
                   />
                 </div>
+
                 <button
                   type="submit"
                   disabled={submitting}
