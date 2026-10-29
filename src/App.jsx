@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { getSchoolTheme } from './config/schools';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ArtisanSearch from './pages/ArtisanSearch';
@@ -22,9 +23,11 @@ function App() {
       }}
     >
       <Routes>
-        <Route path="/" element={user ? <ArtisanSearch /> : <Navigate to="/login" replace />} />
-        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+        <Route path="/" element={user ? <Navigate to="/app" replace /> : <Landing />} />
+        <Route path="/login" element={user ? <Navigate to="/app" replace /> : <Login />} />
+        <Route path="/register" element={user ? <Navigate to="/app" replace /> : <Register />} />
+        <Route path="/app" element={user ? <ArtisanSearch /> : <Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );

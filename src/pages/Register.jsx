@@ -14,6 +14,7 @@ export default function Register() {
     department: '',
     studentId: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -38,10 +39,7 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-center mb-1">
-          CAMPUS<span className="text-[var(--color-accent)]">PADI</span>
-        </h1>
-        <p className="text-center text-gray-500 mb-6">Join your campus community</p>
+        <img src="/logo-2.jpg" alt="CampusPadi" className="w-24 h-24 mx-auto mb-4 object-contain" />
 
         {error && (
           <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{error}</div>
@@ -59,6 +57,7 @@ export default function Register() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Phone Number</label>
             <input
@@ -71,18 +70,30 @@ export default function Register() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              minLength={6}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            />
+            <div className="relative">
+              <input
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={handleChange}
+                required
+                minLength={6}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">School</label>
             <select
@@ -96,6 +107,7 @@ export default function Register() {
               ))}
             </select>
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Department</label>
             <input
@@ -106,6 +118,7 @@ export default function Register() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Student ID (optional)</label>
             <input
@@ -116,6 +129,7 @@ export default function Register() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
+
           <button
             type="submit"
             disabled={loading}
