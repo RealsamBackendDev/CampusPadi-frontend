@@ -108,6 +108,11 @@ export default function ArtisanSearch() {
           >
             Earn as an artisan
           </Link>
+          {user?.artisanProfile && (
+  <Link to="/app/artisan/dashboard" className="text-sm font-medium" style={{ color: theme.primary }}>
+    Artisan Dashboard
+  </Link>
+)}
           <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-gray-800">
             Log out
           </button>

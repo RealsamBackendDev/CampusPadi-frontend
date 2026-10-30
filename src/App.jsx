@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import ArtisanSearch from './pages/ArtisanSearch';
 import MyRequests from './pages/MyRequests';
 import RegisterArtisan from './pages/RegisterArtisan';
+import ArtisanDashboard from './pages/ArtisanDashboard';
 
 function App() {
   const { user, loading } = useAuth();
@@ -32,6 +33,7 @@ function App() {
         <Route path="/register" element={user ? <Navigate to="/app" replace /> : <Register />} />
         <Route path="/app" element={user ? <ArtisanSearch /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/app/artisan/dashboard" element={user ? <ArtisanDashboard /> : <Navigate to="/login" replace />} />
       </Routes>
     </div>
   );
