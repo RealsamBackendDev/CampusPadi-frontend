@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getMyRequests, cancelRequest, createReview } from '../services/api';
+import {
+  getMyRequests,
+  cancelRequest,
+  createReview,
+  initializePayment,
+} from '../services/api';
 import { getSchoolTheme } from '../config/schools';
 
 const STATUS_STYLES = {
@@ -15,6 +20,7 @@ const STATUS_STYLES = {
 export default function MyRequests() {
   const { user } = useAuth();
   const theme = getSchoolTheme(user?.school);
+
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -48,6 +54,15 @@ export default function MyRequests() {
     }
   };
 
+  const handlePay = async (request) => {
+    try {
+      const res = await initializePayment({ serviceRequestId: request.id });
+      window.location.href = res.data.authorizationUrl;
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not start payment');
+    }
+  };
+
   const openReview = (request) => {
     setReviewing(request);
     setRating(5);
@@ -73,24 +88,32 @@ export default function MyRequests() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <Link to="/app" className="text-sm" style={{ color: theme.primary }}>← Back</Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-1">My Requests</h1>
-        </div>
+      <div className="mb-6">
+        <Link to="/app" className="text-sm" style={{ color: theme.primary }}>
+          ← Back
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-900 mt-1">My Requests</h1>
       </div>
 
       {loading && <p className="text-center text-gray-500 py-10">Loading...</p>}
-      {error && <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{error}</div>}
+      {error && (
+        <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{error}</div>
+      )}
       {!loading && requests.length === 0 && !error && (
         <p className="text-center text-gray-500 py-10">
-          No requests yet. <Link to="/app" style={{ color: theme.primary }}>Find an artisan</Link>
+          No requests yet.{' '}
+          <Link to="/app" style={{ color: theme.primary }}>
+            Find an artisan
+          </Link>
         </p>
       )}
 
       <div className="space-y-4">
         {requests.map((request) => (
-          <div key={request.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+          <div
+            key={request.id}
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
+          >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h3 className="font-bold text-gray-900 capitalize">{request.category}</h3>
@@ -107,31 +130,82 @@ export default function MyRequests() {
                   <p className="text-sm mt-1 font-medium">Price: ₦{request.price}</p>
                 )}
               </div>
-              <span className={`text-xs font-bold rounded-full px-3 py-1 whitespace-nowrap ${STATUS_STYLES[request.status] || 'bg-gray-100'}`}>
+              <span
+                className={`text-xs font-bold rounded-full px-3 py-1 whitespace-nowrap ${
+                  STATUS_STYLES[request.status] || 'bg-gray-100'
+                }`}
+              >
                 {request.status.replace(/_/g, ' ')}
               </span>
             </div>
 
-            <div className="flex gap-3 mt-4">
+            <div className="flex flex-wrap gap-3 mt-4">
               {request.status === 'PENDING' && (
                 <button
                   onClick={() => handleCancel(request.id)}
-                  className="text-sm border border-gray-300 text-gray-600 rounded-lg px-4 py-2"
+                  className="text-sm border border-gray-300 text-gray-600 rounded-lg px-4 py-2 cursor-pointer"
                 >
                   Cancel
                 </button>
               )}
+
+              {request.artisan &&
+                ['ACCEPTED', 'IN_PROGRESS', 'COMPLETED'].includes(request.status) && (
+                  <Link
+                    to={`/app/requests/${request.id}/messages`}
+                    className="text-sm border rounded-lg px-4 py-2"
+                    style={{ borderColor: theme.primary, color: theme.primary }}
+                  >
+                    Message
+                  </Link>
+                )}
+
+             {request.status === 'COMPLETED' && !request.paid && request.price != null && (
+  request.priceApproved ? (
+    <button
+      onClick={() => handlePay(request)}
+      className="text-sm text-white font-medium rounded-lg px-4 py-2 bg-green-600 cursor-pointer"
+    >
+      Pay ₦{request.price}
+    </button>
+  ) : (
+    <>
+      <div className="text-sm text-gray-700 self-center">
+        Artisan quoted <b>₦{request.price}</b>
+        {request.budget != null && (
+          <span className="text-gray-400"> (budget ₦{request.budget})</span>
+        )}
+      </div>
+      <button
+        onClick={async () => { await approvePrice(request.id); load(); }}
+        className="text-sm text-white font-medium rounded-lg px-4 py-2 bg-green-600 cursor-pointer"
+      >
+        Approve Price
+      </button>
+      <button
+        onClick={async () => { await disputePrice(request.id); load(); }}
+        className="text-sm border border-red-300 text-red-600 rounded-lg px-4 py-2 cursor-pointer"
+      >
+        Dispute
+      </button>
+    </>
+  )
+)}
+
               {request.status === 'COMPLETED' && !request.review && (
                 <button
                   onClick={() => openReview(request)}
-                  className="text-sm text-white font-medium rounded-lg px-4 py-2"
+                  className="text-sm text-white font-medium rounded-lg px-4 py-2 cursor-pointer"
                   style={{ backgroundColor: theme.primary }}
                 >
                   Rate {request.artisan?.name || 'artisan'}
                 </button>
               )}
+
               {request.status === 'COMPLETED' && request.review && (
-                <span className="text-sm text-amber-500">★ You rated {request.review.rating}/5</span>
+                <span className="text-sm text-amber-500 self-center">
+                  ★ You rated {request.review.rating}/5
+                </span>
               )}
             </div>
           </div>
@@ -141,9 +215,13 @@ export default function MyRequests() {
       {reviewing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
           <div className="bg-white rounded-2xl w-full max-w-md p-6">
-            <h2 className="font-bold text-lg mb-4">Review {reviewing.artisan?.name}</h2>
+            <h2 className="font-bold text-lg mb-4">
+              Review {reviewing.artisan?.name}
+            </h2>
             {reviewError && (
-              <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">{reviewError}</div>
+              <div className="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm">
+                {reviewError}
+              </div>
             )}
             <form onSubmit={submitReview} className="space-y-4">
               <div>
@@ -154,7 +232,9 @@ export default function MyRequests() {
                       key={n}
                       type="button"
                       onClick={() => setRating(n)}
-                      className={`text-2xl ${n <= rating ? 'text-amber-400' : 'text-gray-300'}`}
+                      className={`text-2xl cursor-pointer ${
+                        n <= rating ? 'text-amber-400' : 'text-gray-300'
+                      }`}
                     >
                       ★
                     </button>
@@ -162,7 +242,9 @@ export default function MyRequests() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Comment (optional)</label>
+                <label className="block text-sm font-medium mb-1">
+                  Comment (optional)
+                </label>
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -176,13 +258,13 @@ export default function MyRequests() {
                 <button
                   type="button"
                   onClick={() => setReviewing(null)}
-                  className="flex-1 border border-gray-300 text-gray-600 rounded-lg py-2"
+                  className="flex-1 border border-gray-300 text-gray-600 rounded-lg py-2 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 text-white font-medium rounded-lg py-2"
+                  className="flex-1 text-white font-medium rounded-lg py-2 cursor-pointer"
                   style={{ backgroundColor: theme.primary }}
                 >
                   Submit Review

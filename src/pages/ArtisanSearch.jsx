@@ -113,6 +113,11 @@ export default function ArtisanSearch() {
     Artisan Dashboard
   </Link>
 )}
+{(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
+  <Link to="/app/admin" className="text-sm font-medium" style={{ color: theme.primary }}>
+    Admin
+  </Link>
+)}
           <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-gray-800">
             Log out
           </button>

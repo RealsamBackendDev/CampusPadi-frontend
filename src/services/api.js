@@ -163,5 +163,17 @@ export const getMyWalks = () => api.get('/safe-walks/my-walks');
 export const leaveWalk = (id) => api.delete(`/safe-walks/${id}/leave`);
 export const cancelWalk = (id) => api.patch(`/safe-walks/${id}/cancel`);
 export const completeWalk = (id) => api.patch(`/safe-walks/${id}/complete`);
+export const getPendingPrintShops = () => api.get('/print-shops/admin/pending');
+export const verifyPrintShop = (id) => api.patch(`/print-shops/${id}/verify`);
+export const getPendingVendors = () => api.get('/vendors/admin/pending');
+export const initializePayment = (data) => api.post('/payments/initialize', data);
+export const verifyPayment = (reference) => api.get(`/payments/verify/${reference}`);
+export const getMessages = (requestId) => api.get(`/messages/request/${requestId}`);
+export const sendMessage = (requestId, formData) =>
+  api.post(`/messages/request/${requestId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  export const approvePrice = (id) => api.patch(`/services/${id}/approve-price`);
+export const disputePrice = (id) => api.patch(`/services/${id}/dispute-price`);
 
 export default api;

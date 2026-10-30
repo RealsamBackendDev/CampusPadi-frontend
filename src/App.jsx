@@ -8,6 +8,9 @@ import ArtisanSearch from './pages/ArtisanSearch';
 import MyRequests from './pages/MyRequests';
 import RegisterArtisan from './pages/RegisterArtisan';
 import ArtisanDashboard from './pages/ArtisanDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import PaymentCallback from './pages/PaymentCallback';
+import Messages from './pages/Messages';
 
 function App() {
   const { user, loading } = useAuth();
@@ -33,7 +36,10 @@ function App() {
         <Route path="/register" element={user ? <Navigate to="/app" replace /> : <Register />} />
         <Route path="/app" element={user ? <ArtisanSearch /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/app/admin" element={user ? <AdminDashboard /> : <Navigate to="/login" replace />} />
+        <Route path="/payment/callback" element={<PaymentCallback />} />
         <Route path="/app/artisan/dashboard" element={user ? <ArtisanDashboard /> : <Navigate to="/login" replace />} />
+        <Route path="/app/requests/:requestId/messages" element={user ? <Messages /> : <Navigate to="/login" replace />} />
       </Routes>
     </div>
   );
