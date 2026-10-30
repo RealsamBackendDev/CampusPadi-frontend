@@ -6,6 +6,8 @@ import {
   cancelRequest,
   createReview,
   initializePayment,
+  approvePrice,
+  disputePrice,
 } from '../services/api';
 import { getSchoolTheme } from '../config/schools';
 
