@@ -175,5 +175,14 @@ export const sendMessage = (requestId, formData) =>
   });
   export const approvePrice = (id) => api.patch(`/services/${id}/approve-price`);
 export const disputePrice = (id) => api.patch(`/services/${id}/dispute-price`);
+export const reportLostFoundItem = (formData) =>
+  api.post('/lost-found', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+export const getLostFoundItems = (params) => api.get('/lost-found', { params });
+export const getMyLostFoundItems = () => api.get('/lost-found/my-items');
+export const updateLostFoundStatus = (id, status) =>
+  api.patch(`/lost-found/${id}/status`, { status });
+export const deleteLostFoundItem = (id) => api.delete(`/lost-found/${id}`);
 
 export default api;

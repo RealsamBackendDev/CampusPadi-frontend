@@ -11,6 +11,7 @@ import ArtisanDashboard from './pages/ArtisanDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import PaymentCallback from './pages/PaymentCallback';
 import Messages from './pages/Messages';
+import LostFound from './pages/LostFound';
 
 function App() {
   const { user, loading } = useAuth();
@@ -39,6 +40,7 @@ function App() {
         <Route path="/app/admin" element={user ? <AdminDashboard /> : <Navigate to="/login" replace />} />
         <Route path="/payment/callback" element={<PaymentCallback />} />
         <Route path="/app/artisan/dashboard" element={user ? <ArtisanDashboard /> : <Navigate to="/login" replace />} />
+        <Route path="/app/lost-found" element={user ? <LostFound /> : <Navigate to="/login" replace />} />
         <Route path="/app/requests/:requestId/messages" element={user ? <Messages /> : <Navigate to="/login" replace />} />
       </Routes>
     </div>

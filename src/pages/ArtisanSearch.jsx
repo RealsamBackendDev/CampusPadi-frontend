@@ -101,6 +101,9 @@ export default function ArtisanSearch() {
           <Link to="/app/requests" className="text-sm font-medium" style={{ color: theme.primary }}>
             My Requests
           </Link>
+          <Link to="/app/lost-found" className="text-sm font-medium" style={{ color: theme.primary }}>
+  Lost & Found
+</Link>
           <Link
             to="/app/artisan/register"
             className="text-sm font-medium"
