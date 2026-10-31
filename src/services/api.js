@@ -184,5 +184,19 @@ export const getMyLostFoundItems = () => api.get('/lost-found/my-items');
 export const updateLostFoundStatus = (id, status) =>
   api.patch(`/lost-found/${id}/status`, { status });
 export const deleteLostFoundItem = (id) => api.delete(`/lost-found/${id}`);
+export const createListing = (formData) =>
+  api.post('/marketplace', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+export const getListings = (params) => api.get('/marketplace', { params });
+export const getMyMarketplaceListings = () => api.get('/marketplace/my-listings');
+export const updateListingStatus = (id, status) =>
+  api.patch(`/marketplace/${id}/status`, { status });
+export const deleteListing = (id) => api.delete(`/marketplace/${id}`);
+export const getListingMessages = (listingId) => api.get(`/messages/listing/${listingId}`);
+export const sendListingMessage = (listingId, formData) =>
+  api.post(`/messages/listing/${listingId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 
 export default api;
