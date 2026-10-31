@@ -13,6 +13,7 @@ import PaymentCallback from './pages/PaymentCallback';
 import Messages from './pages/Messages';
 import LostFound from './pages/LostFound';
 import Marketplace from './pages/Marketplace';
+import StudyBuddy from './pages/StudyBuddy';
 
 function App() {
   const { user, loading } = useAuth();
@@ -44,6 +45,7 @@ function App() {
         <Route path="/app/lost-found" element={user ? <LostFound /> : <Navigate to="/login" replace />} />
         <Route path="/app/marketplace" element={user ? <Marketplace /> : <Navigate to="/login" replace />} />
         <Route path="/app/marketplace/:listingId/messages" element={user ? <Messages /> : <Navigate to="/login" replace />} />
+        <Route path="/app/study" element={user ? <StudyBuddy /> : <Navigate to="/login" replace />} />
         <Route path="/app/requests/:requestId/messages" element={user ? <Messages /> : <Navigate to="/login" replace />} />
       </Routes>
     </div>

@@ -198,5 +198,12 @@ export const sendListingMessage = (listingId, formData) =>
   api.post(`/messages/listing/${listingId}`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  export const uploadStudyDocument = (formData) =>
+  api.post('/study/documents', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+export const getStudyDocuments = () => api.get('/study/documents');
+export const searchStudy = (q) => api.get('/study/search', { params: { q } });
+export const deleteStudyDocument = (id) => api.delete(`/study/documents/${id}`);
 
 export default api;
