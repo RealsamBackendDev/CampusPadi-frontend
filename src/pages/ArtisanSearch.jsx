@@ -110,6 +110,9 @@ export default function ArtisanSearch() {
 <Link to="/app/study" className="text-sm font-medium" style={{ color: theme.primary }}>
   Study Buddy
 </Link>
+<Link to="/app/food" className="text-sm font-medium" style={{ color: theme.primary }}>
+  Sapa Menu
+</Link>
           <Link
             to="/app/artisan/register"
             className="text-sm font-medium"
