@@ -205,5 +205,7 @@ export const sendListingMessage = (listingId, formData) =>
 export const getStudyDocuments = () => api.get('/study/documents');
 export const searchStudy = (q) => api.get('/study/search', { params: { q } });
 export const deleteStudyDocument = (id) => api.delete(`/study/documents/${id}`);
+export const askStudy = (data) => api.post('/study/ask', data);
+export const getStudyHistory = () => api.get('/study/history');
 
 export default api;
